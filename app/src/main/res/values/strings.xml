@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Exam_macia_first_term</string>
+    <string name="training_title">Training Title</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="description">Description</string>
+    <string name="series_4">Series: 4</string>
+    <string name="reps">Reps: 10</string>
+    <string name="series">Series: 4</string>
+    <string name="trainings">Trainings</string>
+    <string name="trainings_bar">Trainings</string>
+    <string name="taining_icon">training icon</string>
+    <string name="training">Training</string>
+    <string name="add_training">add training</string>
+    <string name="nombre_del_entrenamiento">Nombre del entrenamiento</string>
+</resources>

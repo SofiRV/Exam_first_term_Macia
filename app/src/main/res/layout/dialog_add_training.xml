@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Título del entrenamiento -->
+        <EditText
+            android:id="@+id/newTrainingTitle"
+            android:hint="Nombre del entrenamiento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Contenedor donde se añadirán los ejercicios dinámicamente -->
+        <LinearLayout
+            android:id="@+id/newexercisesContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Botón para añadir nuevo ejercicio -->
+        <Button
+            android:id="@+id/btnAddExercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Añadir ejercicio"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>
