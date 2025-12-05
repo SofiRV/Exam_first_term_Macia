@@ -1,16 +1,11 @@
 package com.example.exam_macia_first_term;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -18,57 +13,105 @@ import java.util.ArrayList;
 public class ListFragment extends Fragment {
 
     private ListView listView;
-    private ArrayAdapter<String> adapter;
     private ArrayList<Training> trainings = new ArrayList<>();
-    private MainActivity activity;
+    private int selectedPosition = -1; // Posición del entrenamiento seleccionado
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity) {
-            activity = (MainActivity) context;
-            trainings = activity.getAllTrainings();
-        }
+    public ListFragment() {
+        // Required empty public constructor
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        listView = view.findViewById(R.id.listTrainings);
+        listView = view.findViewById(R.id.listViewEntrenamientos);
 
-        // Crear un ArrayAdapter con los títulos de los entrenamientos
-        ArrayList<String> titles = new ArrayList<>();
-        for (Training t : trainings) {
-            titles.add(t.getTitle());
-        }
+        trainings = createTraining();
 
-        adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_1, titles);
+        TrainingAdapter adapter = new TrainingAdapter(getContext(), trainings);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
-            if (activity != null) {
-                activity.onTrainingSelected(position);
-            }
+            selectedPosition = position; // Guardamos la posición seleccionada
+            showDetailFragment(position);
         });
 
         return view;
     }
 
-    // Método para actualizar la lista si cambian los entrenamientos
-    public void updateTrainings(ArrayList<Training> newTrainings) {
-        trainings.clear();
-        trainings.addAll(newTrainings);
+    private void showDetailFragment(int position) {
+        Training selectedTraining = trainings.get(position);
+        Fragment detailsFragment = DetailFragment.newInstance(
+                selectedTraining.getTitle(),
+                selectedTraining.getExercises(),
+                selectedTraining.getImageId()
+        );
 
-        // Actualizar títulos en el adapter
-        ArrayList<String> titles = new ArrayList<>();
-        for (Training t : trainings) {
-            titles.add(t.getTitle());
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            if (activity.isDualPane()) {
+                // Landscape → colocar en detailContainer
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detailContainer, detailsFragment, "detailFragment")
+                        .commit();
+            } else {
+                // Portrait → reemplazar main
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main, detailsFragment, "detailFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
-        adapter.clear();
-        adapter.addAll(titles);
-        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("selectedPosition", selectedPosition);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            selectedPosition = savedInstanceState.getInt("selectedPosition", -1);
+            if (selectedPosition != -1) {
+                // Restaurar fragment de detalle en landscape
+                MainActivity activity = (MainActivity) getActivity();
+                if (activity != null && activity.isDualPane()) {
+                    showDetailFragment(selectedPosition);
+                }
+            }
+        }
+    }
+
+    private ArrayList<Training> createTraining() {
+        ArrayList<Exercise> legExercises = new ArrayList<>();
+        legExercises.add(new Exercise("Squats", "4x10", 4, 10));
+        legExercises.add(new Exercise("Lunges", "4x10", 4, 10));
+        legExercises.add(new Exercise("Calf Raises", "4x10", 4, 10));
+
+        ArrayList<Exercise> armExercises = new ArrayList<>();
+        armExercises.add(new Exercise("Bench Press", "4x10", 4, 10));
+        armExercises.add(new Exercise("Incline Press", "4x10", 4, 10));
+        armExercises.add(new Exercise("Decline Press", "4x10", 4, 10));
+
+        ArrayList<Exercise> backExercises = new ArrayList<>();
+        backExercises.add(new Exercise("Lat Pulldown", "4x10", 4, 10));
+        backExercises.add(new Exercise("Pull Ups", "4x10", 4, 10));
+        backExercises.add(new Exercise("Deadlift", "4x10", 4, 10));
+
+        ArrayList<Exercise> cardioExercises = new ArrayList<>();
+        cardioExercises.add(new Exercise("Running", "10km", 0, 10));
+        cardioExercises.add(new Exercise("Cycling", "10km", 0, 10));
+        cardioExercises.add(new Exercise("Swimming", "10km", 0, 10));
+
+        ArrayList<Training> trainings = new ArrayList<>();
+        trainings.add(new Training("Legs", legExercises, R.drawable.legs_icon));
+        trainings.add(new Training("Arms", armExercises, R.drawable.arms_icon));
+        trainings.add(new Training("Back", backExercises, R.drawable.back_icon));
+        trainings.add(new Training("Cardio", cardioExercises, R.drawable.cardio_icon));
+
+        return trainings;
     }
 }
