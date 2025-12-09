@@ -10,8 +10,8 @@ public class Training implements Serializable {
 
     public Training(String title, ArrayList<Exercise> exercises, int imageId) {
         this.title = title;
-        this.exercises = exercises;
-        this.imageId = imageId;
+        this. exercises = exercises;
+        this. imageId = imageId;
     }
 
     public String getTitle() {

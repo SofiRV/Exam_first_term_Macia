@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/exerciseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/exercise_name"
         android:textStyle="bold"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:layout_marginBottom="4dp"
+        tools:text="Squats"/>
 
     <TextView
         android:id="@+id/exerciseDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description"/>
+        android:layout_marginBottom="8dp"
+        tools:text="4x10"/>
 
     <TextView
         android:id="@+id/exerciseSeries"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/series"/>
+        android:layout_marginBottom="2dp"
+        tools:text="Series: 4"/>
 
     <TextView
         android:id="@+id/exerciseReps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reps"/>
-
+        tools:text="Reps: 10"/>
 
 </LinearLayout>

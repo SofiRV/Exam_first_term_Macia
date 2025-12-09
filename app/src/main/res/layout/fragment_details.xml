@@ -1,66 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/detailImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"/>
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/training_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="16dp"/>
-    <ListView
-        android:id="@+id/listExercises"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:padding="16dp">
 
-</LinearLayout>
--->
+        <!-- Imagen adaptable -->
+        <ImageView
+            android:id="@+id/detailImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxHeight="300dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/training_image"
+            android:layout_marginBottom="16dp"/>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="horizontal"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:padding="16dp">
+        <!-- Título -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            tools:text="Legs"/>
 
-<ImageView
-    android:id="@+id/detailImage"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:scaleType="centerCrop" />
+        <!-- Separador -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginVertical="8dp"/>
 
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:paddingStart="16dp">
+        <!-- Label de ejercicios -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exercises"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
-    <TextView
-        android:id="@+id/title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <!-- ✅ LinearLayout para ejercicios (en vez de ListView) -->
+        <LinearLayout
+            android:id="@+id/exercisesContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <ListView
-        android:id="@+id/listExercises"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-</LinearLayout>
+    </LinearLayout>
 
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

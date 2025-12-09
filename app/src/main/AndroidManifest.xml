@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Exam_macia_first_term">
+        android:theme="@style/Theme.ExamMaciaFirstTerm">
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class ListFragment extends Fragment {
 
     private ListView listView;
-    private ArrayList<Training> trainings = new ArrayList<>();
-    private int selectedPosition = -1; // Posición del entrenamiento seleccionado
+    private ArrayList<Training> trainings;  // ✅ NO inicializar aquí
+    private int selectedPosition = -1;
 
     public ListFragment() {
         // Required empty public constructor
@@ -24,44 +24,33 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        listView = view.findViewById(R.id.listViewEntrenamientos);
+        listView = view.findViewById(R. id.listViewEntrenamientos);
 
-        trainings = createTraining();
+        // ✅ OBTENER DATOS DE LA ACTIVITY (fuente única de verdad)
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            trainings = activity.getTrainings();
+        }
 
-        TrainingAdapter adapter = new TrainingAdapter(getContext(), trainings);
+        // ✅ Fallback si activity es null
+        if (trainings == null) {
+            trainings = new ArrayList<>();
+        }
+
+        TrainingAdapter adapter = new TrainingAdapter(requireContext(), trainings);  // ✅ requireContext()
         listView.setAdapter(adapter);
 
+        // ✅ DELEGAR A LA ACTIVITY (en vez de gestionar fragmentos aquí)
         listView.setOnItemClickListener((parent, view1, position, id) -> {
-            selectedPosition = position; // Guardamos la posición seleccionada
-            showDetailFragment(position);
+            selectedPosition = position;
+
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.onTrainingSelected(position);
+            }
         });
 
         return view;
-    }
-
-    private void showDetailFragment(int position) {
-        Training selectedTraining = trainings.get(position);
-        Fragment detailsFragment = DetailFragment.newInstance(
-                selectedTraining.getTitle(),
-                selectedTraining.getExercises(),
-                selectedTraining.getImageId()
-        );
-
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            if (activity.isDualPane()) {
-                // Landscape → colocar en detailContainer
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.detailContainer, detailsFragment, "detailFragment")
-                        .commit();
-            } else {
-                // Portrait → reemplazar main
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main, detailsFragment, "detailFragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        }
     }
 
     @Override
@@ -75,43 +64,9 @@ public class ListFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             selectedPosition = savedInstanceState.getInt("selectedPosition", -1);
-            if (selectedPosition != -1) {
-                // Restaurar fragment de detalle en landscape
-                MainActivity activity = (MainActivity) getActivity();
-                if (activity != null && activity.isDualPane()) {
-                    showDetailFragment(selectedPosition);
-                }
-            }
+            // ✅ Ya NO restauramos el detalle aquí (MainActivity lo hace)
         }
     }
 
-    private ArrayList<Training> createTraining() {
-        ArrayList<Exercise> legExercises = new ArrayList<>();
-        legExercises.add(new Exercise("Squats", "4x10", 4, 10));
-        legExercises.add(new Exercise("Lunges", "4x10", 4, 10));
-        legExercises.add(new Exercise("Calf Raises", "4x10", 4, 10));
-
-        ArrayList<Exercise> armExercises = new ArrayList<>();
-        armExercises.add(new Exercise("Bench Press", "4x10", 4, 10));
-        armExercises.add(new Exercise("Incline Press", "4x10", 4, 10));
-        armExercises.add(new Exercise("Decline Press", "4x10", 4, 10));
-
-        ArrayList<Exercise> backExercises = new ArrayList<>();
-        backExercises.add(new Exercise("Lat Pulldown", "4x10", 4, 10));
-        backExercises.add(new Exercise("Pull Ups", "4x10", 4, 10));
-        backExercises.add(new Exercise("Deadlift", "4x10", 4, 10));
-
-        ArrayList<Exercise> cardioExercises = new ArrayList<>();
-        cardioExercises.add(new Exercise("Running", "10km", 0, 10));
-        cardioExercises.add(new Exercise("Cycling", "10km", 0, 10));
-        cardioExercises.add(new Exercise("Swimming", "10km", 0, 10));
-
-        ArrayList<Training> trainings = new ArrayList<>();
-        trainings.add(new Training("Legs", legExercises, R.drawable.legs_icon));
-        trainings.add(new Training("Arms", armExercises, R.drawable.arms_icon));
-        trainings.add(new Training("Back", backExercises, R.drawable.back_icon));
-        trainings.add(new Training("Cardio", cardioExercises, R.drawable.cardio_icon));
-
-        return trainings;
-    }
+    // ✅ MÉTODO createTraining() ELIMINADO COMPLETAMENTE
 }
