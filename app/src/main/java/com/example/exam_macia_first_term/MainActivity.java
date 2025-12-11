@@ -5,6 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.ActionBar;
+import android.content.Intent;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 
@@ -12,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isDualPane;
     private static final String KEY_SELECTED_ID = "selected_training_id";
+    private static final String KEY_ALL_TRAININGS = "all_trainings";
     private int currentSelectedTrainingId = -1;
 
     private ArrayList<Training> allTrainings;
@@ -20,10 +27,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inicialización de datos
-        this.allTrainings = getTrainingData();
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_ALL_TRAININGS)) {
+            this.allTrainings = (ArrayList<Training>) savedInstanceState.getSerializable(KEY_ALL_TRAININGS);
+        } else {
+            this.allTrainings = getTrainingData();
+        }
 
         setContentView(R.layout.activity_main);
+
 
         // Configuración de la Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -39,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Restaurar el ID guardado
         if (savedInstanceState != null) {
-            currentSelectedTrainingId = savedInstanceState. getInt(KEY_SELECTED_ID, -1);
+            currentSelectedTrainingId = savedInstanceState.getInt(KEY_SELECTED_ID, -1);
         }
 
         // Gestión del ListFragment
@@ -96,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SELECTED_ID, currentSelectedTrainingId);
+        outState. putSerializable(KEY_ALL_TRAININGS, allTrainings);
     }
 
     public boolean isDualPane() {
@@ -170,4 +182,53 @@ public class MainActivity extends AppCompatActivity {
 
         return trainings;
     }
+    // Al final de MainActivity. java, ANTES del último }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add_training) {
+            // Abrir actividad para agregar entrenamiento
+            Intent intent = new Intent(this, AddTrainingActivity.class);
+            startActivityForResult(intent, REQUEST_ADD_TRAINING);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("MainActivity", "onActivityResult called - requestCode: " + requestCode + ", resultCode: " + resultCode);
+
+        if (requestCode == REQUEST_ADD_TRAINING && resultCode == RESULT_OK && data != null) {
+            Training newTraining = (Training) data.getSerializableExtra("new_training");
+
+            Log.d("MainActivity", "New training received: " + (newTraining != null ? newTraining.getTitle() : "NULL"));
+
+            if (newTraining != null) {
+                allTrainings.add(newTraining);
+                Log.d("MainActivity", "Total trainings now: " + allTrainings. size());
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ListFragment listFragment = (ListFragment) fragmentManager.findFragmentByTag("listFragment");
+
+                Log.d("MainActivity", "ListFragment found: " + (listFragment != null));
+
+                if (listFragment != null) {
+                    listFragment.updateTrainings(allTrainings);
+                }
+
+                Toast.makeText(this, R.string.training_added, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private static final int REQUEST_ADD_TRAINING = 1;
 }

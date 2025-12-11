@@ -1,8 +1,6 @@
 <resources>
-    <!-- Tus strings existentes -->
+    <!-- Strings existentes -->
     <string name="app_name">Exam Macia First Term</string>
-
-    <!-- ✅ NUEVAS STRINGS AGREGADAS -->
     <string name="training">Trainings</string>
     <string name="training_image">Training image</string>
     <string name="training_icon">Training icon</string>
@@ -10,5 +8,25 @@
     <string name="description">Description</string>
     <string name="series">Series</string>
     <string name="reps">Reps</string>
+    <string name="no_trainings">No trainings yet</string>
+    <string name="no_exercises">No exercises in this training</string>
+
+    <!-- ✅ NUEVOS STRINGS -->
+    <string name="add_training">Add Training</string>
+    <string name="training_name">Training name</string>
+    <string name="training_name_hint">e.g. Legs</string>
+    <string name="select_image">Select image</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="exercise_name_hint">e.g.  Squats</string>
+    <string name="description_hint">e.g. 4x10</string>
+    <string name="sets">Sets</string>
+    <string name="sets_hint">e.g. 4</string>
+    <string name="reps_hint">e. g. 10</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <string name="error_empty_name">Training name is required</string>
+    <string name="error_no_exercises">Add at least one exercise</string>
+    <string name="training_added">Training added successfully</string>
     <string name="exercises">Exercises</string>
 </resources>

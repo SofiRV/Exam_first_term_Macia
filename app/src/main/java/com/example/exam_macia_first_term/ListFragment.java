@@ -1,10 +1,12 @@
 package com.example.exam_macia_first_term;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ArrayAdapter;
 
 import androidx.fragment.app.Fragment;
 
@@ -69,4 +71,46 @@ public class ListFragment extends Fragment {
     }
 
     // ✅ MÉTODO createTraining() ELIMINADO COMPLETAMENTE
+    // Al final de ListFragment.java, ANTES del último }
+
+    public void updateTrainings(ArrayList<Training> newTrainings) {
+        Log.d("ListFragment", "===== updateTrainings CALLED =====");
+        Log.d("ListFragment", "New trainings size: " + (newTrainings != null ? newTrainings.size() : "NULL"));
+
+        if (newTrainings == null || newTrainings.isEmpty()) {
+            Log.d("ListFragment", "newTrainings is NULL or empty, returning");
+            return;
+        }
+
+        // ✅ Actualizar la referencia
+        this.trainings = newTrainings;
+
+        if (listView == null) {
+            Log.e("ListFragment", "ERROR: listView is NULL!");
+            return;
+        }
+
+        if (getContext() == null) {
+            Log.e("ListFragment", "ERROR:  getContext() is NULL!");
+            return;
+        }
+
+        // ✅ SIEMPRE CREAR UN ADAPTER NUEVO (más confiable)
+        Log.d("ListFragment", "Creating NEW adapter with " + newTrainings.size() + " trainings");
+
+        TrainingAdapter newAdapter = new TrainingAdapter(requireContext(), newTrainings);
+        listView.setAdapter(newAdapter);
+
+        // Reconfigurar el click listener
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            selectedPosition = position;
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.onTrainingSelected(position);
+            }
+        });
+
+        Log.d("ListFragment", "Adapter set with " + newAdapter.getCount() + " items");
+        Log.d("ListFragment", "===== updateTrainings FINISHED =====");
+    }
 }
